@@ -1,0 +1,12 @@
+.git
+.DS_Store
+
+data/
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+.env
+.env.*
+!.env.example
