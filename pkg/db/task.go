@@ -2,9 +2,11 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
+	"errors"
 	"time"
 )
+
+var ErrTaskNotFound = errors.New("task not found")
 
 type Task struct {
 	ID      string `json:"id"`
@@ -212,7 +214,9 @@ func UpdateTask(task *Task) error {
 	}
 
 	if count == 0 {
-		return fmt.Errorf("incorrect id for updating task")
+
+		return ErrTaskNotFound
+
 	}
 
 	return nil
@@ -237,7 +241,7 @@ func DeleteTask(id string) error {
 	}
 
 	if count == 0 {
-		return fmt.Errorf("task not found")
+		return ErrTaskNotFound
 	}
 
 	return nil
@@ -263,7 +267,7 @@ func UpdateDate(next string, id string) error {
 	}
 
 	if count == 0 {
-		return fmt.Errorf("task not found")
+		return ErrTaskNotFound
 	}
 
 	return nil

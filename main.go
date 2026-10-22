@@ -25,6 +25,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	defer db.Close()
+
 	port := "7540"
 
 	envPort := os.Getenv("TODO_PORT")

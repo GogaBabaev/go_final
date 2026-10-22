@@ -2,6 +2,7 @@ package api
 
 import (
 	"go_final_project/pkg/db"
+	"log"
 	"net/http"
 )
 
@@ -23,12 +24,14 @@ func tasksHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		writeJSON(w, map[string]string{
-			"error": err.Error(),
+		log.Printf("Ошибка получения списка задач: %v", err)
+		writeJSON(w, http.StatusInternalServerError, map[string]string{
+
+			"error": "Внутренняя ошибка сервера",
 		})
 		return
 	}
-	writeJSON(w, TasksResp{
+	writeJSON(w, http.StatusOK, TasksResp{
 		Tasks: tasks,
 	})
 

@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"log"
 	"net/http"
 	"os"
 
@@ -21,7 +22,7 @@ func signInHandler(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&req)
 
 	if err != nil {
-		writeJSON(w, map[string]string{
+		writeJSON(w, http.StatusBadRequest, map[string]string{
 			"error": err.Error(),
 		})
 		return
@@ -30,10 +31,12 @@ func signInHandler(w http.ResponseWriter, r *http.Request) {
 	password := os.Getenv("TODO_PASSWORD")
 
 	if req.Password != password {
-		writeJSON(w, map[string]string{
+
+		writeJSON(w, http.StatusUnauthorized, map[string]string{
 			"error": "Неверный пароль",
 		})
 		return
+
 	}
 
 	hash := sha256.Sum256([]byte(password))
@@ -48,13 +51,17 @@ func signInHandler(w http.ResponseWriter, r *http.Request) {
 	tokenString, err := token.SignedString([]byte(password))
 
 	if err != nil {
-		writeJSON(w, map[string]string{
-			"error": err.Error(),
+
+		log.Printf("Ошибка создания JWT: %v", err)
+
+		writeJSON(w, http.StatusInternalServerError, map[string]string{
+			"error": "Внутренняя ошибка сервера",
 		})
 		return
+
 	}
 
-	writeJSON(w, map[string]string{
+	writeJSON(w, http.StatusOK, map[string]string{
 		"token": tokenString,
 	})
 }
