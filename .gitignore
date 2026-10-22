@@ -1,0 +1,17 @@
+# SQLite
+*.db
+*.db-journal
+*.db-shm
+*.db-wal
+data/
+
+# Секреты
+.env
+.env.*
+!.env.example
+
+# macOS
+.DS_Store
+
+# Локальные бинарники
+/scheduler
